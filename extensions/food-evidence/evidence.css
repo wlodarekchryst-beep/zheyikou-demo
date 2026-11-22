@@ -1,0 +1,67 @@
+.evidence-preview {
+  margin: 0; padding: clamp(14px, 4vw, 42px); color: #22342a; background: #f7f7ef;
+  font-family: system-ui, "Microsoft YaHei", sans-serif; line-height: 1.6;
+}
+.evidence-preview main { max-width: 1080px; margin: auto; }
+.food-evidence, .evidence-entry, .evidence-label-link { --ev-green: #254937; --ev-muted: #4f6256; --ev-line: #d9e3d5; }
+.food-evidence { color: #25362c; line-height: 1.6; }
+.food-evidence *, .evidence-entry, .evidence-label-link { box-sizing: border-box; }
+.food-evidence h1, .food-evidence h2, .food-evidence h3, .food-evidence p { margin: 0; }
+.food-evidence a { color: var(--ev-green); font-weight: 650; text-underline-offset: .18em; }
+.food-evidence a:focus-visible, .evidence-entry:focus-visible, .food-evidence summary:focus-visible { outline: 2px solid #316d51; outline-offset: 3px; }
+.evidence-entry {
+  width: 100%; display: grid; text-align: left; align-items: center; gap: 12px; grid-template-columns: auto 1fr auto;
+  min-height: 72px; margin-top: 16px; padding: 11px 15px; border: 1px solid var(--ev-line);
+  border-radius: 15px; background: #f2f6ec; color: var(--ev-green); font: inherit; cursor: pointer;
+}
+.evidence-entry:hover { background: #eaf1e3; }
+.evidence-entry-mark { display: grid; place-items: center; width: 42px; height: 42px; border-radius: 12px; background: #dce9d4; font: 700 28px Georgia, serif; }
+.evidence-entry strong, .evidence-entry small { display: block; }
+.evidence-entry small { color: var(--ev-muted); line-height: 1.35; }
+.evidence-entry-arrow { font-size: 1.25rem; }
+.evidence-label-link { display: grid; gap: 5px; border: 1px solid var(--ev-line); border-radius: 12px; padding: 10px 13px; background: #f1f7ec; color: var(--ev-muted); font-size: .88rem; }
+.evidence-label-link button { justify-self: start; }
+.food-evidence .evidence-hero {
+  display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: clamp(12px, 3vw, 32px);
+  padding: clamp(19px, 4.5vw, 43px); border: 1px solid #d6e1d1; border-radius: 23px;
+  background: linear-gradient(120deg, #e7f0e2 15%, #eff2df 76%, #f2eddb); color: #213d2e;
+}
+.evidence-kicker { font-size: .83rem; font-weight: 750; letter-spacing: .05em; color: #4b654d; }
+.evidence-hero h1 { margin: 4px 0 8px; font-size: clamp(2rem, 4.8vw, 3.7rem); line-height: 1.18; letter-spacing: -.025em; }
+.evidence-intro { max-width: 47rem; font-size: .98rem; color: #425c4b; }
+.evidence-hero .evidence-structure-link { margin-top: 12px; font-size: .82rem; }
+.evidence-grain {
+  position: relative; display: grid; place-items: center; width: clamp(80px, 16vw, 164px); aspect-ratio: 1;
+  border: 1px solid #d8dfcb; border-radius: 50%; background: #fdf9e8; color: #476a52;
+}
+.evidence-grain span { font: 500 clamp(48px, 9vw, 94px)/1 Georgia, serif; margin-top: -5%; }
+.evidence-grain i, .evidence-grain b { position: absolute; top: 10%; right: 12%; width: 12%; height: 21%; background: #c5a56c; border-radius: 6% 92% 16% 90%; rotate: 15deg; }
+.evidence-grain b { top: 24%; right: 5%; rotate: 76deg; background: #ac9564; }
+.evidence-section { margin-top: 22px; }
+.evidence-heading { display: flex; justify-content: space-between; align-items: center; gap: 10px; margin-bottom: 10px; }
+.food-evidence h2 { font-size: 1.27rem; line-height: 1.4; }
+.evidence-grid { display: grid; grid-template-columns: repeat(auto-fit,minmax(min(100%, 245px),1fr)); gap: 12px; }
+.evidence-study { display: flex; flex-direction: column; gap: 9px; padding: clamp(13px,2vw,19px); border: 1px solid var(--ev-line); border-radius: 15px; background: #fffefa; min-width: 0; font-size: .9rem; }
+.evidence-study h3 { color: #25382d; margin-top: 1px; font-size: 1.08rem; }
+.evidence-design, .evidence-context { color: var(--ev-muted); font-size: .81rem; }
+.evidence-value { display: flex; align-items: baseline; gap: 5px 8px; flex-wrap: wrap; color: var(--ev-green); }
+.evidence-value strong { font-size: 2.15rem; font-variant-numeric: tabular-nums; line-height: 1.12; }
+.evidence-value span { font-size: .82rem; }
+.evidence-study details { margin: 0; padding-block: 7px; border-top: 1px solid #ebeee4; }
+.evidence-study details p, .evidence-method > p { margin-top: 6px; color: var(--ev-muted); }
+.food-evidence summary { cursor: pointer; color: var(--ev-green); font-weight: 700; font-size: .88rem; }
+.evidence-study footer { margin-top: auto; padding-top: 7px; border-top: 1px solid #ebeee4; font-size: .79rem; }
+.evidence-study footer p, .evidence-study footer a, .evidence-study footer small { display: block; overflow-wrap: anywhere; }
+.evidence-study footer small { margin-top: 1px; color: var(--ev-muted); }
+.evidence-application, .evidence-method { background: #fffefa; padding: clamp(13px,2vw,20px); border: 1px solid var(--ev-line); border-radius: 15px; }
+.evidence-application p { margin-top: 7px; font-size: .92rem; }
+.evidence-method { margin-top: 12px; overflow-wrap: anywhere; font-size: .89rem; }
+.evidence-method ul { padding-left: 1.25em; }
+@media (max-width: 570px) {
+  .evidence-hero h1 { font-size: clamp(1.65rem, 7vw, 2.1rem); }
+  .evidence-hero { align-items: start; }
+  .evidence-intro { font-size: .88rem; }
+  .evidence-grain { width: 53px; }
+  .evidence-grain span { font-size: 35px; }
+  .ingredients-layout .evidence-label-link { order: 4; }
+}

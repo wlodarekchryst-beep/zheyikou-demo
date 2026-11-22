@@ -1,0 +1,75 @@
+(() => {
+  'use strict';
+
+  window.OatEvidence = {
+    food:'燕麦',
+    component:'燕麦 β-葡聚糖',
+    description:'燕麦籽粒中的一种可溶性膳食纤维。它的葡萄糖链含有 β-(1→3) 和 β-(1→4) 两种连接，吸水后可形成有黏性的溶液。',
+    structureSource:'https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2021.6493',
+    mechanisms:[
+      {
+        title:'餐后血糖',
+        text:'黏性可能影响食物在消化道里的移动。一项健康成人交叉试验中，β-葡聚糖强化燕麦面包比全麦面包的胃排空半时间更长，同时餐后血糖增量曲线下面积更低。',
+        url:'https://pmc.ncbi.nlm.nih.gov/articles/PMC10949669/',
+      },
+      {
+        title:'胆固醇',
+        text:'增加胆汁酸排出是候选机制之一。一项回肠造口受试者的短期研究观察到，保留原有 β-葡聚糖的燕麦麸提高了胆汁酸排出量。这个结果提供了机制线索。',
+        url:'https://pubmed.ncbi.nlm.nih.gov/17251929/',
+      },
+    ],
+    studies:[
+      {
+        topic:'低密度脂蛋白胆固醇（LDL-C）',
+        design:'随机对照试验的系统综述和 Meta 分析',
+        value:'−0.19',
+        unit:'mmol/L',
+        result:'相较对照，LDL-C 平均降低 0.19 mmol/L，95% 置信区间为 −0.23 至 −0.14 mmol/L。',
+        context:'58 项试验 · 3,974 名参与者 · 干预至少 3 周',
+        intervention:'各试验中燕麦 β-葡聚糖的中位剂量为 3.5 g/天。比较富含该成分的饮食与对照饮食。',
+        limit:'不同试验的 LDL-C 效应差异较大（I² = 79%）。合并结果描述的是试验条件下的平均变化。',
+        authors:'Ho 等',
+        year:2016,
+        journal:'British Journal of Nutrition',
+        doi:'10.1017/S000711451600341X',
+        url:'https://pubmed.ncbi.nlm.nih.gov/27724985/',
+      },
+      {
+        topic:'单餐后的血糖反应',
+        design:'单餐交叉对照试验的系统综述和 Meta 分析',
+        value:'−23%',
+        unit:'血糖增量曲线下面积',
+        result:'在纳入的单餐试验中，加入燕麦 β-葡聚糖后，餐后血糖增量曲线下面积（iAUC）比对照低 23%。',
+        context:'103 个试验比较 · 538 名参与者 · 单餐观察',
+        intervention:'比较含燕麦 β-葡聚糖的试验餐与对照餐。iAUC 概括的是餐后观察期间血糖高于基线的总体变化。',
+        limit:'剂量、分子量、食品形态和对照餐均会影响结果。该研究评估的是一餐后的短期反应。',
+        authors:'Zurbau 等',
+        year:2021,
+        journal:'European Journal of Clinical Nutrition',
+        doi:'10.1038/s41430-021-00875-9',
+        url:'https://pubmed.ncbi.nlm.nih.gov/33608654/',
+      },
+      {
+        topic:'分子量与结果的关系',
+        design:'多中心双盲随机对照试验',
+        value:'4 周',
+        unit:'谷物食品干预',
+        result:'每天 3 g 高分子量燕麦 β-葡聚糖组的 LDL-C 比对照低 0.21 mmol/L。每天 4 g 的低分子量组与对照的差异未达到统计显著性。',
+        context:'367 人随机分组 · 345 人完成 · 小麦纤维谷物作对照',
+        intervention:'入组者的 LDL-C 为 3.0–5.0 mmol/L。研究比较不同分子量和剂量的燕麦 β-葡聚糖谷物，以及小麦纤维谷物。',
+        limit:'该试验比较的是指定制剂。解读其他食品时，还要看 β-葡聚糖含量和加工后的性质。',
+        authors:'Wolever 等',
+        year:2010,
+        journal:'The American Journal of Clinical Nutrition',
+        doi:'10.3945/ajcn.2010.29174',
+        url:'https://pubmed.ncbi.nlm.nih.gov/20660224/',
+      },
+    ],
+    search:{
+      date:'2026-11-21',
+      sources:'Consensus 发现线索，PubMed 和期刊页面核对文献。',
+      queries:['oat beta-glucan LDL cholesterol randomized trials','oat beta-glucan postprandial glucose single-meal','oat beta-glucan molecular weight randomized trial'],
+      scope:'本卡定向检索人体对照研究和相应的 Meta 分析，选取能说明血脂、单餐血糖反应和分子量影响的三篇论文。逐篇记录人群、剂量、对照、观察时间和结局。成分结构和可能机制另外附上对应来源。',
+    },
+  };
+})();

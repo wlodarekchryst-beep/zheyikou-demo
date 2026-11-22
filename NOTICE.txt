@@ -1,0 +1,7 @@
+这一口 · 农客松演示
+
+餐盘识别使用 Apple ML Research 的 MobileCLIP-S0 视觉编码器（Xenova FP16 ONNX 转换版）。
+Apple Machine Learning Research Model is licensed under the Apple Machine Learning Research Model License Agreement.
+模型协议见 vision/LICENSE-Apple-Model。苹果软件许可见 vision/LICENSE-MobileCLIP。
+模型来源 https://huggingface.co/Xenova/mobileclip_s0/blob/main/onnx/vision_model_fp16.onnx
+Apple 模型 https://huggingface.co/apple/MobileCLIP-S0
