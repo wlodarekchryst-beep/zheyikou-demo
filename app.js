@@ -5,6 +5,7 @@
   const P = window.Packaging;
   const I = window.DietInsights;
   const F = window.FavoriteFoods;
+  const M = window.MealMascot;
   const E = window.FoodEvidence;
   const root = document.getElementById('app');
   const icons = {
@@ -64,7 +65,7 @@
     profile.target = '';
   }
   const state = {
-    page: pageFromHash(), mode:'meal', profile, history:load('history', []),
+    page: pageFromHash(), mode:'meal', profile, history:load('history', []), mealPhotos:load('mealPhotos', []),
     meal:{rows:[blankFood()], seasonings:[], file:null, url:'', demo:false, status:'', busy:false, detected:false, note:null},
     label:emptyLabel(),
     draft:null, report:{file:null, status:'', busy:false, raw:'', demo:false}, logWindow:'today',
@@ -101,10 +102,6 @@
     return state.history.filter(record => record.time >= from.getTime());
   }
 
-  function mouseMark() {
-    return '<span class="mouse-mark" aria-hidden="true"><i></i><b></b></span>';
-  }
-
   function sectionLinks(links) {
     return `<nav class="section-links" aria-label="本页快捷定位">${links.map(([id,label]) => `<button type="button" data-section="${id}">${label}</button>`).join('')}</nav>`;
   }
@@ -118,8 +115,8 @@
     const content = active === 'evidence' ? E.renderPage()
       : active === 'scan' ? scanPage() : active === 'profile' ? profilePage() : active === 'log' ? logPage()
       : active === 'plan' ? favoriteFoodsPage() : homePage();
-    root.innerHTML = `<div class="layout" data-view="${active}"><aside class="sidebar"><button class="brand" data-page="home"><span class="brand-mark">${mouseMark()}</span><span><strong>这一口</strong><small>拍照饮食助手</small></span></button>${navigation(active)}<div class="sidebar-bottom"><div class="privacy-label">${icon('lock',16)}<span>档案保存在本机</span></div></div></aside>
-      <main id="main-content" tabindex="-1" class="main"><div class="mobile-top"><button class="brand" data-page="home"><span class="brand-mark">${mouseMark()}</span><strong>这一口</strong></button></div><div class="content">${content}</div></main></div>`;
+    root.innerHTML = `<div class="layout" data-view="${active}"><aside class="sidebar"><button class="brand" data-page="home"><span class="brand-mark"><img src="assets/mouse-cutout-brand.webp" alt="" width="47" height="47"></span><span><strong>这一口</strong><small>拍照饮食助手</small></span></button>${navigation(active)}<div class="sidebar-bottom"><div class="privacy-label">${icon('lock',16)}<span>档案保存在本机</span></div></div></aside>
+      <main id="main-content" tabindex="-1" class="main"><div class="mobile-top"><button class="brand" data-page="home"><span class="brand-mark"><img src="assets/mouse-cutout-brand.webp" alt="" width="47" height="47"></span><strong>这一口</strong></button></div><div class="content">${content}</div></main></div>`;
   }
 
   function homePage() {
@@ -134,7 +131,7 @@
     const energyValues = live.map(record => record.totals.energy).filter(value => value != null);
     const energy = energyValues.length ? N.round(energyValues.reduce((sum, value) => sum + value, 0)) : null;
     return `<header class="page-head home-head"><div><h1>今天吃什么？</h1><p>拍一张照片，了解这一口的营养。</p></div><div class="date-chip">${icon('sun',18)} ${dateLabel.format(new Date())}</div></header>
-      <section class="hero" aria-labelledby="hero-title"><div class="hero-text"><h2 id="hero-title">这一餐，<br>吃进去多少？</h2><p>拍食堂餐盘或食品包装，<br class="desktop-break">按你实际吃的份量算一算。</p><div class="hero-actions"><button class="button primary" data-action="start-meal">${icon('camera',20)} 拍照分析</button><button class="button ghost" data-action="demo-meal">试用示例</button></div></div><div class="hero-visual"><div class="meal-print"><img src="assets/home-meal.webp" alt="配有米饭、烤鸡胸肉和蔬菜的示例餐盘"><div class="photo-tag">${icon('bowl',17)} 示例餐盘</div></div><span class="hero-mouse" aria-hidden="true">${mouseMark()}</span></div></section>
+      <section class="hero" aria-labelledby="hero-title"><div class="hero-text"><h2 id="hero-title">这一餐，<br>吃进去多少？</h2><p>拍食堂餐盘或食品包装，<br class="desktop-break">按你实际吃的份量算一算。</p><div class="hero-actions"><button class="button primary" data-action="start-meal">${icon('camera',20)} 拍照分析</button><button class="button ghost" data-action="demo-meal">试用示例</button><button class="text-button" data-install>安装这一口</button></div></div><div class="hero-visual">${mascotPortrait(currentMascotPose())}</div></section>
       ${balanceCard(records)}
       <section class="quick-section" aria-labelledby="quick-title"><h2 id="quick-title" class="section-title">你想分析什么？</h2><div class="quick-grid">
         ${quick('start-meal','camera','餐盘照片','识别菜品，按食用份量估算营养。','green')}
@@ -181,14 +178,32 @@
     return `<button class="quick-card" data-action="${action}"><span class="icon-tile ${color}">${icon(visual,23)}</span><span><strong>${title}</strong><small>${body}</small></span></button>`;
   }
 
+  function currentMascotPose(now = new Date()) {
+    return M.poseFor(now, I.tally(todayRecords(), 'energy'), I.targets(state.profile).energy,
+      todayRecords(), state.mealPhotos, state.favorites);
+  }
+
+  function mascotPortrait(pose) {
+    const [name, message] = M.poses[pose];
+    return `<figure class="mascot-portrait" data-mascot-view data-pose="${pose}">
+      <img src="assets/mouse-cutout-${pose}.webp" alt="" width="480" height="480">
+      <figcaption><strong>${name}</strong><small>${message}</small></figcaption>
+    </figure>`;
+  }
+
+  function refreshMascot(now) {
+    const views = root.querySelectorAll('[data-mascot-view]');
+    if (!views.length) return;
+    const pose = currentMascotPose(now);
+    for (const view of views) if (view.dataset.pose !== pose) view.outerHTML = mascotPortrait(pose);
+  }
+
   function mascotCard() {
     const records = todayRecords();
     const goals = I.targets(state.profile);
     const energy = I.tally(records, 'energy');
     const carbs = I.tally(records, 'carbs');
     const reached = goals.energy != null && energy.total != null && energy.total >= goals.energy;
-    const share = goals.energy && energy.known ? Math.min(1, energy.total / goals.energy) : 0;
-    const belly = 0.53 + share * 0.58;
     const message = mascotMessage(energy, carbs, goals, reached);
     const progress = (key, metric) => {
       const {label, unit} = N.nutrients[key];
@@ -199,13 +214,7 @@
         ${metric.missing ? `<small>另有 ${metric.missing} 条记录缺少此项</small>` : ''}</div>`;
     };
     return `<section class="card mouse-card ${reached ? 'mouse-goal-reached' : ''}" aria-labelledby="mouse-title">
-      <div class="mouse-scene" aria-hidden="true" style="--belly-scale:${belly.toFixed(3)}">
-        <div class="mouse"><span class="mouse-tail"></span><span class="mouse-body"></span><span class="mouse-belly"></span>
-          <span class="mouse-foot left"></span><span class="mouse-foot right"></span><span class="mouse-ear left"></span><span class="mouse-ear right"></span>
-          <span class="mouse-head"><i class="mouse-eye left"></i><i class="mouse-eye right"></i><i class="mouse-nose"></i><i class="mouse-smile"></i></span>
-          <span class="mouse-paw left"></span><span class="mouse-paw right"></span>${reached ? '<span class="mouse-sign">达标</span>' : ''}
-        </div>
-      </div>
+      <div class="mouse-scene">${mascotPortrait(currentMascotPose())}</div>
       <div class="mouse-content"><div class="section-head"><h2 id="mouse-title">小鼠的今日进度</h2><button class="text-button" data-page="profile">设置目标</button></div>
         ${progress('energy', energy)}${progress('carbs', carbs)}
         <div class="mouse-speech"><p id="mouse-message" aria-live="polite">${esc(message)}</p><button class="button outline mouse-voice" data-action="speak-mouse" aria-label="播报今日饮食进度">${icon('voice',17)} 播报</button></div>
@@ -797,6 +806,7 @@
       target.resultRequested = false;
       target.detected = false;
       target.note = null;
+      target.photoAt = Date.now();
     }
     Object.assign(target, {file, url: image && type !== 'report' ? URL.createObjectURL(file) : '', demo:false, status:'', busy:false, raw:''});
     render();
@@ -904,20 +914,17 @@
     if (location.protocol === 'file:') throw new Error('请通过本地启动脚本打开，以使用图片 OCR。');
     const engine = await loadTesseract();
     const job = ocrQueue.then(async () => {
-      const local = localAsset('vendor/');
-      const mirror = window.zheyikouPublicAssets;
-      const createWorker = base => engine.createWorker(['chi_sim','eng'], 1, {
-        workerPath:localAsset('vendor/worker.min.js'), workerBlobURL:false, corePath:new URL('tesseract-core-lstm.wasm.js', base).href,
-        langPath:base.replace(/\/$/, ''), errorHandler:() => {},
+      ocrWorker ??= engine.createWorker(['chi_sim','eng'], 1, {
+        workerPath:localAsset('vendor/worker.min.js'), workerBlobURL:false, corePath:localAsset('vendor/tesseract-core-lstm.wasm.js'),
+        langPath:localAsset('vendor/').replace(/\/$/, ''), errorHandler:() => {},
       });
-      ocrWorker ??= mirror ? createWorker(new URL('vendor/', mirror).href).catch(() => createWorker(local)) : createWorker(local);
       const loading = ocrWorker;
       const discard = () => {
         ocrWorker = null;
         void loading.then(worker => worker.terminate(), () => {}).catch(() => {});
       };
       try {
-        const worker = await timeLimit(loading, mirror ? 45000 : 24000);
+        const worker = await timeLimit(loading, 24000);
         return (await timeLimit(worker.recognize(image), 18000)).data.text;
       } catch (error) {
         discard();
@@ -1280,7 +1287,7 @@
     if (navigator.connection?.saveData || location.protocol === 'file:') return;
     if (state.page === 'scan' && state.mode === 'meal' && !mealWorker) {
       try {
-        mealWorker = new Worker(localAsset('vision/worker.mjs?v=public-assets-1'), {type:'module'});
+        mealWorker = new Worker(localAsset('vision/worker.mjs?v=meal-balance'), {type:'module'});
         const worker = mealWorker;
         worker.addEventListener('error', () => { if (mealWorker === worker) mealWorker = null; }, {once:true});
         worker.postMessage({warm:true});
@@ -1314,7 +1321,7 @@
 
   function classifyMeal(samples, onStage) {
     const task = mealQueue.then(() => new Promise((resolve, reject) => {
-      const worker = mealWorker ??= new Worker(localAsset('vision/worker.mjs?v=public-assets-1'), {type:'module'});
+      const worker = mealWorker ??= new Worker(localAsset('vision/worker.mjs?v=meal-balance'), {type:'module'});
       const finish = (result, failed = false) => {
         clearTimeout(timer);
         worker.removeEventListener('message', received);
@@ -1347,6 +1354,14 @@
     try {
       const samples = await photoSamples(current.url, detail);
       if (current.file !== file) return;
+      if (current.photoAt != null) {
+        const date = new Date(current.photoAt).toDateString();
+        const times = [...state.mealPhotos, ...load('mealPhotos', [])];
+        state.mealPhotos = [...new Set([...times.filter(time => new Date(time).toDateString() === date), current.photoAt])];
+        persist('mealPhotos', state.mealPhotos);
+        current.photoAt = null;
+        refreshMascot(new Date());
+      }
       const guesses = await classifyMeal(samples, stage => {
         if (current.file !== file) return;
         current.status = stage === 'analyzing' ? '正在本机分析餐盘…' : '正在加载视觉模型，首次可能需要一些时间…';
@@ -1509,10 +1524,12 @@
     if (['home','plan','log'].includes(state.page)
       && planDate !== now.toDateString() && !state.planDraft && !state.planRecord) render();
     planDate = now.toDateString();
+    refreshMascot(now);
     for (const element of root.querySelectorAll('[data-plan-at]')) element.textContent = planCountdown(Number(element.dataset.planAt), +now);
   }
   window.setInterval(refreshPlanClock, 15000);
   document.addEventListener('visibilitychange', refreshPlanClock);
   render();
   prepareScan();
+  M.startWelcome();
 })();

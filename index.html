@@ -6,19 +6,33 @@
   <meta name="description" content="拍一餐或一张食品标签，按真实份量了解吃进去的营养。">
   <meta name="theme-color" content="#faf7ee">
   <title>这一口 · 拍照饮食助手</title>
-  <link rel="stylesheet" href="style.css?v=picnic-ui">
+  <link rel="manifest" href="./manifest.webmanifest">
+  <link rel="apple-touch-icon" href="./assets/mouse-app-180.png">
+  <link rel="icon" href="./assets/mouse-app-192.png">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="这一口">
+  <link rel="stylesheet" href="style.css?v=mascot-cutout">
   <link rel="stylesheet" href="extensions/food-evidence/evidence.css?v=oat-card">
   <script defer src="nutrition.js?v=ingredient-seasoning"></script>
   <script defer src="packaging.js?v=portion-check"></script>
   <script defer src="insights.js?v=food-plan"></script>
   <script defer src="favorites.js"></script>
+  <script defer src="mascot.js?v=mascot-3d"></script>
   <script defer src="extensions/food-evidence/oats.js?v=oat-card"></script>
   <script defer src="extensions/food-evidence/evidence.js?v=oat-card"></script>
-  <script defer src="published-assets.js?v=1"></script>
-  <script defer src="app.js?v=portion-check-oat-card-public-assets"></script>
+  <script defer src="app.js?v=mascot-portion-evidence"></script>
+  <script defer src="./install.js?v=merged-pages"></script>
 </head>
 <body>
   <div id="app"></div>
+  <dialog id="mouse-welcome" aria-labelledby="mouse-welcome-title">
+    <div class="welcome-art">
+      <img src="assets/mouse-cutout-wave.webp" alt="小鼠挥手打招呼" width="480" height="480">
+      <span class="welcome-paw" aria-hidden="true"></span>
+    </div>
+    <h1 id="mouse-welcome-title">嗨，欢迎来到这一口！</h1>
+    <button class="button primary" type="button">进入首页</button>
+  </dialog>
   <div id="toast" class="toast" role="status" hidden></div>
 </body>
 </html>

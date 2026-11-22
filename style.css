@@ -457,3 +457,64 @@ input[type=checkbox] { accent-color: var(--forest); }
   .toast { bottom: calc(72px + env(safe-area-inset-bottom)); }
 }
 
+
+.installed [data-install] { display: none; }
+dialog[aria-labelledby='install-heading'] p { margin: 12px 0 18px; }
+.mascot-portrait { min-width: 0; margin: 0; text-align: center; }
+.mascot-portrait img { display: block; margin: 0 auto; width: min(100%,198px); height: auto; aspect-ratio: 1; }
+.mascot-portrait figcaption { display: grid; gap: 2px; margin-top: 5px; padding-inline: 6px; }
+.mascot-portrait strong { color: #4d3328; }
+.mascot-portrait small { font-size: .79rem; color: #5a4739; }
+.hero-visual { display: grid; place-items: center; padding: 11px 17px 10px 0; }
+.hero-visual .mascot-portrait img { position: static; width: min(100%,250px); object-fit: contain; }
+.mouse-scene .mascot-portrait { padding: 12px 7px; }
+.mouse-scene .mascot-portrait img { width: min(100%,140px); }
+.mascot-portrait[data-pose=stop] strong { color: #9e382a; }
+#mouse-welcome {
+  width: min(92vw,390px); max-height: 94vh; border: 1px solid #ddc794; border-radius: 26px;
+  padding: 18px 22px 23px; text-align: center; color: #46372a; background: #fff5df;
+}
+#mouse-welcome::backdrop { background: #faf4e9ed; }
+#mouse-welcome-title { margin: 0 0 17px; font-size: clamp(1.18rem,5vw,1.55rem); letter-spacing: normal; }
+.welcome-art { width: min(100%,305px); position: relative; margin: 0 auto 12px; }
+.welcome-art img { display: block; width: 100%; height: auto; }
+.welcome-paw { display: none; position: absolute; inset: 0; background: url('assets/mouse-cutout-wave.webp') center / contain no-repeat; }
+@media (prefers-reduced-motion:no-preference) {
+  .waving .welcome-art img {
+    clip-path: polygon(evenodd, 0 0, 100% 0, 100% 100%, 0 100%, 0 0, 25% 49%, 34% 48%, 37% 54%, 36% 59%, 31% 61%, 25% 57%, 25% 49%, 0 0);
+  }
+  .waving .welcome-paw {
+    display: block;
+    clip-path: polygon(25% 49%, 34% 48%, 37% 54%, 36% 59%, 31% 61%, 25% 57%);
+    transform-origin: 34% 58%;
+    animation: mascot-wave .36s ease-in-out 4;
+  }
+  .mascot-portrait img { animation: mascot-pop .32s ease-out; }
+  @keyframes mascot-wave { 26% { transform: rotate(-15deg); } 74% { transform: rotate(11deg); } }
+  @keyframes mascot-pop { from { transform: scale(.94); } to { transform: scale(1); } }
+}
+@media (max-width:570px) {
+  .hero-visual { padding: 8px 7px; }
+  .hero-visual .mascot-portrait strong { font-size: .95rem; }
+  .hero-visual .mascot-portrait small { font-size: .72rem; line-height: 1.35; }
+}
+.hero-visual .mascot-cover {
+  position: absolute;
+  inset: 8% 8% 8% 1%;
+  overflow: hidden;
+  border-radius: 32px;
+  background: #fcf1da;
+  border: 3px solid #fff7df;
+  box-shadow: 0 5px 17px #76451e20;
+}
+.hero-visual .mascot-cover img { object-fit: contain; object-position: center; }
+.brand-mark, .mobile-top .brand-mark { border-radius: 50%; overflow: hidden; background: #fcf1da; }
+.brand-mark img { display: block; width: 100%; height: 100%; object-fit: contain; scale: 1.12; }
+@media (max-width:570px) {
+  .hero-visual .mascot-cover {
+    inset: 50% 7% auto -5%;
+    aspect-ratio: 1.1;
+    border-radius: 24px;
+    transform: translateY(-50%);
+  }
+}
