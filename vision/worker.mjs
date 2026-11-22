@@ -1,4 +1,4 @@
-import { init, classifySamples } from './recognize.mjs?v=meal-balance';
+import { init, classifySamples } from './recognize.mjs?v=public-assets-1';
 
 self.addEventListener('message', async ({data:{samples, warm}}) => {
   if (warm) { await init().catch(() => {}); return; }

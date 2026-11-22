@@ -904,17 +904,20 @@
     if (location.protocol === 'file:') throw new Error('请通过本地启动脚本打开，以使用图片 OCR。');
     const engine = await loadTesseract();
     const job = ocrQueue.then(async () => {
-      ocrWorker ??= engine.createWorker(['chi_sim','eng'], 1, {
-        workerPath:localAsset('vendor/worker.min.js'), workerBlobURL:false, corePath:localAsset('vendor/tesseract-core-lstm.wasm.js'),
-        langPath:localAsset('vendor/').replace(/\/$/, ''), errorHandler:() => {},
+      const local = localAsset('vendor/');
+      const mirror = window.zheyikouPublicAssets;
+      const createWorker = base => engine.createWorker(['chi_sim','eng'], 1, {
+        workerPath:localAsset('vendor/worker.min.js'), workerBlobURL:false, corePath:new URL('tesseract-core-lstm.wasm.js', base).href,
+        langPath:base.replace(/\/$/, ''), errorHandler:() => {},
       });
+      ocrWorker ??= mirror ? createWorker(new URL('vendor/', mirror).href).catch(() => createWorker(local)) : createWorker(local);
       const loading = ocrWorker;
       const discard = () => {
         ocrWorker = null;
         void loading.then(worker => worker.terminate(), () => {}).catch(() => {});
       };
       try {
-        const worker = await timeLimit(loading, 24000);
+        const worker = await timeLimit(loading, mirror ? 45000 : 24000);
         return (await timeLimit(worker.recognize(image), 18000)).data.text;
       } catch (error) {
         discard();
@@ -1277,7 +1280,7 @@
     if (navigator.connection?.saveData || location.protocol === 'file:') return;
     if (state.page === 'scan' && state.mode === 'meal' && !mealWorker) {
       try {
-        mealWorker = new Worker(localAsset('vision/worker.mjs?v=meal-balance'), {type:'module'});
+        mealWorker = new Worker(localAsset('vision/worker.mjs?v=public-assets-1'), {type:'module'});
         const worker = mealWorker;
         worker.addEventListener('error', () => { if (mealWorker === worker) mealWorker = null; }, {once:true});
         worker.postMessage({warm:true});
@@ -1311,7 +1314,7 @@
 
   function classifyMeal(samples, onStage) {
     const task = mealQueue.then(() => new Promise((resolve, reject) => {
-      const worker = mealWorker ??= new Worker(localAsset('vision/worker.mjs?v=meal-balance'), {type:'module'});
+      const worker = mealWorker ??= new Worker(localAsset('vision/worker.mjs?v=public-assets-1'), {type:'module'});
       const finish = (result, failed = false) => {
         clearTimeout(timer);
         worker.removeEventListener('message', received);

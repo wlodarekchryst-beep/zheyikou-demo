@@ -1,4 +1,5 @@
 import * as ort from './ort.wasm.min.mjs';
+import '../published-assets.js?v=1';
 
 ort.env.wasm.numThreads = 1;
 ort.env.wasm.wasmPaths = new URL('.', import.meta.url).href;
@@ -6,9 +7,49 @@ const size = 256;
 const pixels = size * size;
 let initialized;
 
+const chunkSize = 4 * 1024 * 1024;
+
+async function fetchBytes(url, signal) {
+  const response = await fetch(url, {signal});
+  if (!response.ok) throw new Error('Vision asset unavailable');
+  return new Uint8Array(await response.arrayBuffer());
+}
+
+async function binaryAsset(name, size) {
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), 50000);
+  try {
+    const chunks = await Promise.all(Array.from({length:Math.ceil(size / chunkSize)}, async (_, index) => {
+      const url = new URL(`vision/public-binaries/${name}.${index}.bin`, globalThis.zheyikouPublicAssets);
+      const bytes = await fetchBytes(url, controller.signal);
+      if (bytes.length !== Math.min(chunkSize, size - index * chunkSize)) throw new Error('Incorrect asset length');
+      return bytes;
+    }));
+    const result = new Uint8Array(size);
+    chunks.forEach((bytes, index) => result.set(bytes, index * chunkSize));
+    return result;
+  } catch {
+    controller.abort();
+    return fetchBytes(new URL(name, import.meta.url));
+  } finally {
+    clearTimeout(timer);
+  }
+}
+
+async function visionSession() {
+  const config = {executionProviders:['wasm']};
+  if (!globalThis.zheyikouPublicAssets) return ort.InferenceSession.create(new URL('encoder.onnx', import.meta.url).href, config);
+  const [model, wasm] = await Promise.all([
+    binaryAsset('encoder.onnx', 22876479),
+    binaryAsset('ort-wasm-simd-threaded.wasm', 11210254),
+  ]);
+  ort.env.wasm.wasmBinary = wasm.buffer;
+  return ort.InferenceSession.create(model, config);
+}
+
 export async function init() {
   initialized ??= Promise.all([
-    ort.InferenceSession.create(new URL('encoder.onnx', import.meta.url).href, {executionProviders:['wasm']}),
+    visionSession(),
     fetch(new URL('catalog.json', import.meta.url)).then(response => {
       if (!response.ok) throw new Error('Could not read label catalog');
       return response.json();
